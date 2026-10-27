@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\LANCommander.Mcp\LANCommander.Mcp.csproj" />
+    <PackageReference Include="LANCommander.Server.Plugins" Version="2.2.0-alpha.3" />
+    <PackageReference Include="System.Security.Cryptography.Pkcs" Version="10.0.13" />
+    <PackageReference Include="System.Security.Cryptography.Xml" Version="10.0.13" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Common" Version="10.0.13" />
+    <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="10.0.13" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
+    <PackageReference Include="Moq" Version="4.20.72" />
+    <PackageReference Include="xunit" Version="2.9.3" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="3.1.5" PrivateAssets="all" />
+  </ItemGroup>
+  <Target Name="CopyPluginBuildOutput" AfterTargets="Build">
+    <ItemGroup>
+      <PluginFile Include="$(MSBuildProjectDirectory)\..\..\src\LANCommander.Mcp\bin\$(Configuration)\net10.0\*.dll" />
+      <PluginFile Include="$(MSBuildProjectDirectory)\..\..\src\LANCommander.Mcp\bin\$(Configuration)\net10.0\*.deps.json" />
+    </ItemGroup>
+    <Copy SourceFiles="@(PluginFile)" DestinationFolder="$(TargetDir)plugin" />
+  </Target>
+</Project>

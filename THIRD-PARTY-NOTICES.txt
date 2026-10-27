@@ -1,0 +1,18 @@
+The installable plugin includes the following unmodified third-party assemblies:
+
+ModelContextProtocol, ModelContextProtocol.Core, ModelContextProtocol.AspNetCore
+Version: 2.3.0
+Copyright: Model Context Protocol a Series of LF Projects, LLC.
+Source: https://github.com/modelcontextprotocol/csharp-sdk
+License: Apache-2.0, with the upstream MIT-to-Apache transition notice.
+See licenses/MCP.txt for the upstream license and transition notice.
+
+Microsoft.Extensions.AI.Abstractions
+Version: 10.11.0
+Copyright: Microsoft Corporation.
+Source: https://github.com/dotnet/extensions
+License: MIT.
+See licenses/Microsoft.Extensions.txt for the upstream license.
+
+LANCommander contracts are compile-time references and are not redistributed
+in the plugin package. The LANCommander server supplies its own copies.

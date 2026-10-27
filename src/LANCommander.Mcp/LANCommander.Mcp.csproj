@@ -1,0 +1,43 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <Version>0.1.0</Version>
+    <Authors>aaronpowell</Authors>
+    <Description>Administrator-only MCP catalog management for LANCommander servers.</Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/aaronpowell/lancommander-mcp-plugin</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/aaronpowell/lancommander-mcp-plugin</PackageProjectUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageType>LANCommander.Plugin;LANCommander.Plugin.Server</PackageType>
+    <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
+    <!-- The host installs the bundled lib folder, not NuGet dependency groups. -->
+    <NoWarn>$(NoWarn);NU5128</NoWarn>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <EnableDynamicLoading>true</EnableDynamicLoading>
+    <TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);PackPluginDependencies</TargetsForTfmSpecificContentInPackage>
+  </PropertyGroup>
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="LANCommander.SDK" Version="2.2.0-alpha.3" ExcludeAssets="runtime" PrivateAssets="all" />
+    <PackageReference Include="LANCommander.Server.Plugins" Version="2.2.0-alpha.3" ExcludeAssets="runtime" PrivateAssets="all" />
+    <PackageReference Include="ModelContextProtocol.AspNetCore" Version="2.3.0" />
+    <PackageReference Include="System.Security.Cryptography.Pkcs" Version="10.0.13" ExcludeAssets="runtime" PrivateAssets="all" />
+    <None Include="..\..\README.md" Pack="true" PackagePath="\" />
+    <None Include="..\..\LICENSE" Pack="true" PackagePath="lib/$(TargetFramework)" />
+    <None Include="..\..\THIRD-PARTY-NOTICES.txt" Pack="true" PackagePath="lib/$(TargetFramework)" />
+    <None Include="..\..\licenses\*.txt" Pack="true" PackagePath="lib/$(TargetFramework)/licenses" />
+  </ItemGroup>
+  <Target Name="PackPluginDependencies" DependsOnTargets="Build">
+    <ItemGroup>
+      <TfmSpecificPackageFile Include="$(TargetDir)*.dll" Exclude="$(TargetPath)">
+        <PackagePath>lib/$(TargetFramework)</PackagePath>
+      </TfmSpecificPackageFile>
+      <TfmSpecificPackageFile Include="$(TargetDir)$(AssemblyName).deps.json">
+        <PackagePath>lib/$(TargetFramework)</PackagePath>
+      </TfmSpecificPackageFile>
+    </ItemGroup>
+  </Target>
+</Project>
