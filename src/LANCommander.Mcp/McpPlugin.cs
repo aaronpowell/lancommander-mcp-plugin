@@ -17,12 +17,14 @@ public sealed class McpPlugin : IPlugin
     public const string PluginId = "io.github.aaronpowell.lancommander.mcp";
     public string Id => PluginId;
     public string Name => "LANCommander MCP";
-    public string Version => "0.1.1";
+    public string Version => "0.2.0";
     public string Author => "aaronpowell";
 
     public void ConfigureServices(IServiceCollection services)
     {
         services.AddSingleton<IServerEndpointExtension, McpEndpoints>();
+        services.AddSingleton<IServerRouteAssemblyExtension, McpPages>();
+        services.AddSingleton<IServerNavigationExtension, McpNavigation>();
         services.AddMcpServer()
             .WithHttpTransport(options => options.Stateless = true)
             .WithTools<CatalogTools>()
@@ -43,6 +45,10 @@ public sealed class McpEndpoints : IServerEndpointExtension
 
     public void MapEndpoints(IEndpointRouteBuilder endpoints)
     {
+        endpoints.MapGet("/setup.mjs", () => Results.Stream(
+            typeof(McpPlugin).Assembly.GetManifestResourceStream("LANCommander.Mcp.setup.mjs")
+                ?? throw new InvalidOperationException("The MCP setup module is missing."),
+            "text/javascript"));
         endpoints.MapMcp().Add(builder =>
         {
             var next = builder.RequestDelegate

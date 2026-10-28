@@ -20,10 +20,10 @@ The initial implementation was checked against upstream `LANCommander/LANCommand
 ```powershell
 dotnet test tests\LANCommander.Mcp.Tests
 dotnet pack src\LANCommander.Mcp -c Release -o artifacts
-.\eng\Test-Package.ps1 -PackagePath artifacts\LANCommander.Mcp.0.1.1.nupkg
+.\eng\Test-Package.ps1 -PackagePath artifacts\LANCommander.Mcp.0.2.0.nupkg
 ```
 
-Upload `artifacts\LANCommander.Mcp.0.1.1.nupkg` through the server's plugin
+Upload `artifacts\LANCommander.Mcp.0.2.0.nupkg` through the server's plugin
 package installer, then restart LANCommander. The package declares
 `LANCommander.Plugin` and `LANCommander.Plugin.Server` and bundles its private
 dependencies and dependency manifest under `lib/net10.0`. Host-owned LANCommander
@@ -47,6 +47,30 @@ Tagged releases (`v*`) build, test and attach the installable NuGet package to a
 GitHub release. The workflow does not publish to NuGet.org.
 
 ## Connect
+
+### Get a token from the plugin page
+
+Open **Settings > Integrations > MCP** (or `/Plugins/Mcp`) while signed in as an
+administrator. The page and its navigation entry are contributed by this plugin;
+no LANCommander changes or new authentication API are required.
+
+Enter an LC administrator username and password, acknowledge the refresh-token
+warning, and select **Generate access token**. The browser posts directly to the
+existing same-origin `/api/Auth/Login` endpoint, just like the PowerShell login
+example. Password authentication must be enabled. HTTPS is required except on
+localhost; credentials are never forwarded to another host or across redirects.
+
+The password is cleared after the request. The access token is masked and held
+only in page memory, never local/session storage. The refresh token is discarded.
+Use **Copy access token** or **Copy MCP configuration**, then **Clear token**.
+Clearing or leaving the page does not revoke the token. The copied configuration
+uses the VS Code MCP format and contains the secret: do not commit it.
+
+This is a temporary workaround until LC offers proper API tokens. Tokens expire,
+have all permissions of the account that logged in (not just MCP), and **generating
+one replaces that account's refresh token**, potentially preventing other clients
+from refreshing. Use administrator credentials even if the page itself is already
+open as an administrator; LC's login endpoint authenticates the entered account.
 
 The endpoint is:
 
@@ -150,6 +174,8 @@ mock providers. They load the built plugin through LANCommander's isolated
 `PluginLoadContext`, then exercise the real HTTP MCP pipeline, browser origin
 guard and the same route-group authorization arrangement as LANCommander.
 No live catalog is modified.
+Run `node --test tests/setup.test.mjs` for the browser login helper's credential,
+same-origin, HTTPS, error-handling and clipboard checks.
 
 For testing inside a local LANCommander clone, first fetch upstream and check
 out its latest `main` in an isolated worktree, build the server, and install the

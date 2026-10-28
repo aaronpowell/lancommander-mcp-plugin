@@ -18,10 +18,11 @@ jobs:
         with:
           dotnet-version: '10.0.x'
       - run: dotnet test tests/LANCommander.Mcp.Tests -c Release
+      - run: node --test tests/setup.test.mjs
       - run: dotnet pack src/LANCommander.Mcp -c Release -o artifacts
       - name: Verify installable package
         shell: pwsh
-        run: ./eng/Test-Package.ps1 -PackagePath artifacts/LANCommander.Mcp.0.1.1.nupkg
+        run: ./eng/Test-Package.ps1 -PackagePath artifacts/LANCommander.Mcp.0.2.0.nupkg
       - uses: actions/upload-artifact@v4
         with:
           name: lancommander-mcp-plugin

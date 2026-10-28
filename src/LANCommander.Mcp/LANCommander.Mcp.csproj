@@ -1,10 +1,10 @@
-<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk.Razor">
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <Version>0.1.1</Version>
+    <Version>0.2.0</Version>
     <Authors>aaronpowell</Authors>
     <Description>Administrator-only MCP catalog management for LANCommander servers.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -23,12 +23,14 @@
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="LANCommander.SDK" Version="2.2.0-alpha.3" ExcludeAssets="runtime;native" PrivateAssets="all" />
     <PackageReference Include="LANCommander.Server.Plugins" Version="2.2.0-alpha.3" ExcludeAssets="runtime;native" PrivateAssets="all" />
+    <PackageReference Include="LANCommander.Server.UI" Version="2.2.0-alpha.3" ExcludeAssets="runtime;native" PrivateAssets="all" />
     <PackageReference Include="ModelContextProtocol.AspNetCore" Version="2.3.0" />
     <PackageReference Include="System.Security.Cryptography.Pkcs" Version="10.0.13" ExcludeAssets="runtime;native" PrivateAssets="all" />
     <None Include="..\..\README.md" Pack="true" PackagePath="\" />
     <None Include="..\..\LICENSE" Pack="true" PackagePath="lib/$(TargetFramework)" />
     <None Include="..\..\THIRD-PARTY-NOTICES.txt" Pack="true" PackagePath="lib/$(TargetFramework)" />
     <None Include="..\..\licenses\*.txt" Pack="true" PackagePath="lib/$(TargetFramework)/licenses" />
+    <EmbeddedResource Include="Pages\setup.mjs" LogicalName="LANCommander.Mcp.setup.mjs" />
   </ItemGroup>
   <Target Name="PackPluginDependencies" DependsOnTargets="Build">
     <ItemGroup>

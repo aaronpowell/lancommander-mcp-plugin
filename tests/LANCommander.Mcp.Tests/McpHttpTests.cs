@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using LANCommander.SDK.Plugins;
+using LANCommander.Mcp.Pages;
 using LANCommander.Server.Plugins;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
@@ -233,6 +234,38 @@ public sealed class McpHttpTests : IAsyncLifetime
         _client.DefaultRequestHeaders.Add("Origin", "http://localhost");
         var response = await Request("tools/list");
         Assert.Equal(35, response.GetProperty("result").GetProperty("tools").GetArrayLength());
+    }
+
+    [Theory]
+    [InlineData(null, HttpStatusCode.Unauthorized)]
+    [InlineData("user", HttpStatusCode.Forbidden)]
+    [InlineData("admin", HttpStatusCode.OK)]
+    public async Task SetupModuleRequiresAdministrator(string? token, HttpStatusCode expected)
+    {
+        _client.DefaultRequestHeaders.Authorization = token is null ? null : new("Bearer", token);
+        using var response = await _client.GetAsync("/api/Plugins/Mcp/setup.mjs");
+        Assert.Equal(expected, response.StatusCode);
+        if (expected == HttpStatusCode.OK)
+        {
+            Assert.Equal("text/javascript", response.Content.Headers.ContentType?.MediaType);
+            Assert.Contains("api/Auth/Login", await response.Content.ReadAsStringAsync());
+        }
+    }
+
+    [Fact]
+    public void SetupPageAndNavigationAreAdministratorOnly()
+    {
+        var navigation = new McpNavigation();
+        Assert.Equal("/Plugins/Mcp", navigation.Href);
+        Assert.Equal(ServerNavigationSection.Integrations, navigation.Section);
+        Assert.Equal(PluginAccessPolicy.Administrator, navigation.Access);
+        Assert.Equal(typeof(McpPlugin).Assembly, new McpPages().Assembly);
+        var route = Assert.Single(typeof(McpSetup).GetCustomAttributes(typeof(Microsoft.AspNetCore.Components.RouteAttribute), false)
+            .Cast<Microsoft.AspNetCore.Components.RouteAttribute>());
+        Assert.Equal(navigation.Href, route.Template);
+        var access = Assert.Single(typeof(McpSetup).GetCustomAttributes(typeof(PluginAccessAttribute), false)
+            .Cast<PluginAccessAttribute>());
+        Assert.Equal(PluginAccessPolicy.Administrator, access.Policy);
     }
 
     [Fact]
