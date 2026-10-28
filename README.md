@@ -20,14 +20,23 @@ The initial implementation was checked against upstream `LANCommander/LANCommand
 ```powershell
 dotnet test tests\LANCommander.Mcp.Tests
 dotnet pack src\LANCommander.Mcp -c Release -o artifacts
-.\eng\Test-Package.ps1 -PackagePath artifacts\LANCommander.Mcp.0.1.0.nupkg
+.\eng\Test-Package.ps1 -PackagePath artifacts\LANCommander.Mcp.0.1.1.nupkg
 ```
 
-Upload `artifacts\LANCommander.Mcp.0.1.0.nupkg` through the server's plugin
+Upload `artifacts\LANCommander.Mcp.0.1.1.nupkg` through the server's plugin
 package installer, then restart LANCommander. The package declares
 `LANCommander.Plugin` and `LANCommander.Plugin.Server` and bundles its private
 dependencies and dependency manifest under `lib/net10.0`. Host-owned LANCommander
 assemblies are deliberately excluded.
+Both managed runtime and native assets of the host contracts are excluded:
+PowerShell and its native dependencies belong to LANCommander, not this plugin.
+Package verification checks that every runtime asset declared in the plugin's
+dependency manifest is actually bundled, including platform-specific assets.
+
+If upgrading from 0.1.0 after a `Microsoft.PowerShell.Native` / `build.manifest`
+load failure, install 0.1.1 and restart the server. For manual installations,
+replace the old plugin output, including `LANCommander.Mcp.deps.json`; replacing
+only the DLL will retain the faulty manifest.
 
 For a manual installation, build in Release and copy the **whole output folder**
 to `Plugins\LANCommander.Mcp` under the server's application directory, then restart.

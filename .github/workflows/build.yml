@@ -21,7 +21,7 @@ jobs:
       - run: dotnet pack src/LANCommander.Mcp -c Release -o artifacts
       - name: Verify installable package
         shell: pwsh
-        run: ./eng/Test-Package.ps1 -PackagePath artifacts/LANCommander.Mcp.0.1.0.nupkg
+        run: ./eng/Test-Package.ps1 -PackagePath artifacts/LANCommander.Mcp.0.1.1.nupkg
       - uses: actions/upload-artifact@v4
         with:
           name: lancommander-mcp-plugin

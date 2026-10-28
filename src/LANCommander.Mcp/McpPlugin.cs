@@ -17,7 +17,7 @@ public sealed class McpPlugin : IPlugin
     public const string PluginId = "io.github.aaronpowell.lancommander.mcp";
     public string Id => PluginId;
     public string Name => "LANCommander MCP";
-    public string Version => "0.1.0";
+    public string Version => "0.1.1";
     public string Author => "aaronpowell";
 
     public void ConfigureServices(IServiceCollection services)
